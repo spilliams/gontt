@@ -7,60 +7,95 @@ A simple Gantt-like charting tool written in Go
 how should it work?
 ===================
 
-``gontt tree`` should output something like the following:
+``gontt`` should output something like the following:
 
 ::
+   chart generated from ./gontt.json
 
-   Empty the garage
-   ├── move tools out
-   │   └── more cleats and shelves in basement
-   ├── move bikes into shed
-   │   └── install doors on the shed
-   └── move lumber somewhere
-
-Although there's an argument to be made for prettier lines:
-
-::
-
-   take out the trash  ─╮
-   do the dishes        ├─
-   vacuum               ╰─╮
-   sweep the house        ├─
-   brush the dog          ├─
-
+   put the dog outside ⊏⊐╮
+   brush the dog         ├⊏═⊐──╮
+   sweep the house       ╰⊏══⊐┬┤
+   take out the trash         │╰⊏⊐
+   vacuum                     ╰⊏═⊐
 
 The model of a **Task**, then, is currently:
 
 .. code-block:: go
 
    type Task struct {
-      downstream  []Task
       name        string
+      duration    int
+      downstream  []Task
+      upstream    []Task
    }
 
-Should I implement the standard "box/whisker" idea for timing? Should I implement timing at all? Deadline, estimated duration, hours already spent on it
+``gontt init`` will generate a stub of a json file in the local directory.
 
-What about Resources? People, tools, locations, etc.
+``gontt -i some/other/file.json`` will use an explicit input file location.
 
-What if a Task is used as dependency for multiple upstream Tasks?
+more thoughts
+=============
 
-::
+1. Should the timing have ties to a calendar? deadlines? Actual duration (vs estimated)?
 
-   has 2 downstream ─╮
-   has 1 and 1       ├─╮
-   has 1 and 1       ╰─┤
-   has 2 upstream      ╰─
+2. What about Resources? People, tools, locations, etc.
 
-And if/when we introduce durations:
+3. Potential ugliness: multiple depencency chains:
 
-::
+   ::
+      chart generated from ./gontt.json
 
-   has 2 downstream ⊏═⊐╮
-   has 1 and 1         ├⊏═══⊐╮
-   has 1 and 1         ╰⊏═⊐──┤
-   has 2 upstream            ╰⊏═⊐
+      put the dog outside ⊏⊐╮
+      brush the dog         ├⊏═⊐┬──╮
+      bring the dog in      │   ╰⊏⊐│
+      sweep the house       ╰⊏══⊐┬─┤
+      take out the trash         │ ╰⊏⊐
+      vacuum                     ╰⊏═⊐
 
-sticky spots
-============
+   Maybe just tack them on the end?
 
-- A depends on B and C, B and C each depend on D (I'll call this "multiple upstream")
+   ::
+      Using gonttfile ./gontt.json
+
+      put the dog outside ⊏⊐╮
+      brush the dog         ├⊏═⊐──┬╮
+      bring the dog in      │     │╰⊏⊐
+      sweep the house       ╰⊏══⊐┬┤
+      take out the trash         │╰⊏⊐
+      vacuum                     ╰⊏═⊐
+
+   gee, teaching a computer to untangle these lines could be a hard thing.
+
+4. Should ``gontt`` have options for prompting the user for information? Or does the chart rely on the user editing the json file manually? Something like the following commands
+
+   .. code-block:: console
+
+      $ gontt t "brush the dog" 1
+      Using gonttfile ./gontt.json
+      New task "brush the dog" created, with duration 1
+
+      001 put the dog outside ⊏⊐╮
+      002 sweep the house       ╰⊏══⊐┬╮
+      004 take out the trash         │╰⊏⊐
+      003 vacuum                     ╰⊏═⊐
+      005 brush the dog       ⊏═⊐
+
+      $ gontt l 1-5
+      Using gonttfile ./gontt.json
+      "brush the dog" depends on "put the dog outside"
+
+      001 put the dog outside ⊏⊐╮
+      005 brush the dog         ├⊏═⊐
+      002 sweep the house       ╰⊏══⊐┬╮
+      004 take out the trash         │╰⊏⊐
+      003 vacuum                     ╰⊏═⊐
+
+      $ gontt l 5-4
+      Using gonttfile ./gontt.json
+      "take out the trash" depends on "brush the dog"
+
+      001 put the dog outside ⊏⊐╮
+      005 brush the dog         ├⊏═⊐──╮
+      002 sweep the house       ╰⊏══⊐┬┤
+      004 take out the trash         │╰⊏⊐
+      003 vacuum                     ╰⊏═⊐
