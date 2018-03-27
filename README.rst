@@ -13,17 +13,18 @@ how should it work?
 
    chart generated from ./gontt.json
 
-   put the dog outside ⊏⊐╮
-   brush the dog         ├⊏═⊐──╮
-   sweep the house       ╰⊏══⊐┬┤
-   take out the trash         │╰⊏⊐
-   vacuum                     ╰⊏═⊐
+   001 put the dog outside ⊏⊐╮
+   002 brush the dog         ├⊏═⊐──╮
+   004 sweep the house       ╰⊏══⊐┬┤
+   003 take out the trash         │╰⊏⊐
+   005 vacuum                     ╰⊏═⊐
 
 The model of a **Task**, then, is currently:
 
 .. code-block:: go
 
    type Task struct {
+      id          int
       name        string
       duration    int
       downstream  []Task
@@ -46,24 +47,24 @@ more thoughts
    ::
       chart generated from ./gontt.json
 
-      put the dog outside ⊏⊐╮
-      brush the dog         ├⊏═⊐┬──╮
-      bring the dog in      │   ╰⊏⊐│
-      sweep the house       ╰⊏══⊐┬─┤
-      take out the trash         │ ╰⊏⊐
-      vacuum                     ╰⊏═⊐
+      001 put the dog outside ⊏⊐╮
+      002 brush the dog         ├⊏═⊐┬──╮
+      006 bring the dog in      │   ╰⊏⊐│
+      004 sweep the house       ╰⊏══⊐┬─┤
+      003 take out the trash         │ ╰⊏⊐
+      005 vacuum                     ╰⊏═⊐
 
    Maybe just tack them on the end?
 
    ::
       Using gonttfile ./gontt.json
 
-      put the dog outside ⊏⊐╮
-      brush the dog         ├⊏═⊐──┬╮
-      bring the dog in      │     │╰⊏⊐
-      sweep the house       ╰⊏══⊐┬┤
-      take out the trash         │╰⊏⊐
-      vacuum                     ╰⊏═⊐
+      001 put the dog outside ⊏⊐╮
+      002 brush the dog         ├⊏═⊐──┬╮
+      006 bring the dog in      │     │╰⊏⊐
+      004 sweep the house       ╰⊏══⊐┬┤
+      003 take out the trash         │╰⊏⊐
+      005 vacuum                     ╰⊏═⊐
 
    gee, teaching a computer to untangle these lines could be a hard thing.
 
