@@ -10,6 +10,7 @@ how should it work?
 ``gontt`` should output something like the following:
 
 ::
+
    chart generated from ./gontt.json
 
    put the dog outside ⊏⊐╮
