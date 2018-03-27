@@ -45,6 +45,7 @@ more thoughts
 3. Potential ugliness: multiple depencency chains:
 
    ::
+
       chart generated from ./gontt.json
 
       001 put the dog outside ⊏⊐╮
@@ -57,6 +58,7 @@ more thoughts
    Maybe just tack them on the end?
 
    ::
+
       Using gonttfile ./gontt.json
 
       001 put the dog outside ⊏⊐╮
