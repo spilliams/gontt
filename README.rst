@@ -150,9 +150,11 @@ WIP
 
 whatever algorithm is ordering the rows...
 
-| I have 2 downstreams here (005, 002). What order should they be in?
-| 1. do any of them have no downstreams? no
-| 2. which has fewer downstreams?
+I have 2 downstreams here (005, 002). What order should they be in?
+
+1. do any of them have no downstreams? no
+2. which has fewer downstreams?
+3. after I ignore all the downstreams they share, which has fewer?
 
 ::
 
@@ -168,4 +170,4 @@ whatever algorithm is ordering the rows...
    004 take out the trash         │╰⊏⊐
    003 vacuum                     ╰⊏═⊐
 
-is that so ugly?
+But wait, is that so ugly? I dunno, maybe there's a case where it could get real ugly. I guess I'll just have to build it and play with it to find out.
